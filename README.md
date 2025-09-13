@@ -3,6 +3,8 @@
  Name: Edward Jeremy Worang
  NPM: 2406359475
 
+ **TUGAS 2**
+
  1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 
  Secara ringkas:
@@ -77,3 +79,70 @@ sehingga django bisa jadi choice yang baik, terus juga komunitas django besar se
 
 6. Semua sudah perfect si, saya harap asisten dosen tetap konsistent dalam pekerjaannya dan juga semangat 
 terus untuk mengajar kita (thumbs up).
+
+
+**TUGAS 3**
+
+1.  Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+- Menghubungkan Komponen yang Terpisah, Platform modern biasanya dibangun dengan arsitektur terdistribusi microservices, serverless, dll.. Data delivery memastikan bahwa semua komponen yang terpisah ini dapat saling berkomunikasi dan bertukar data dengan lancar.
+-Menyediakan Data Reatime untuk Pengalaman yang Dinamis
+Pengguna modern mengharapkan pengalaman yang cepat dan real-time. Data delivery memungkinkan update informasi terjadi tanpa perlu merefresh halaman secara manual.
+- Memastikan Keandalan dan Ketahanan Sistem 
+Dalam skenario kegagalanm, data delivery yang dirancang dengan baik menggunakan antrian atau message queues dapat menyimpan data sementara sampai sistem tujuan siap memprosesnya kembali. Ini mencegah kehilangan data yang kritis.
+- Meningkatkan kemanan data, dalam hal enkripsi data dalam perjalanan yang dapat diakses oleh authorized user only
+- Menskala Sistem secara Horizontal 
+Data delivery memungkinkan beban kerja didistribusikan ke banyak server atau worker. Ketika lalu lintas data meningkat, platform dapat dengan mudah menambah kapasitas pemrosesan tanpa mengubah arsitektur inti.\
+
+2.  Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+Menurut saya si JSON lebih baik karena hal utama yaitu readibility nya sangat jelas dibanding XML karena JSON berstruktur key value pair mirip struktur data ketika DDP 1 jadi sangat realte. Mengapa JSON lebih popular?
+JSON jauh lebih ringkas, mudah dibaca, memiliki peforma yang lenih baik karena strukturnya yang sederhana parsing JSON jauh lebih cepat dan menggunakan memori yang lebih sedikit dibandingkan XML, JSON adalah bahasa de facto untuk RESTful APIs. Hampir semua API modern (Twitter, Facebook, Google, dll.) mengembalikan respons dalam format JSON karena kemudahan konsumsinya oleh klien JavaScript di frontend (React, Vue, Angular).
+
+3. Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+Berfungsi untuk memvalidasi data yang telah diinput oleh user pada form. Memeriksa apakah semua data yang diinput oleh user biasanya dari request.POST memenuhi semua aturan yang telah didefinisikan di form seperti tipe data, required field, panjang maksimal, dll.
+
+Mengembalikan nilai boolean True jika semua data valid, atau False jika ada yang tidak valid.
+
+4. Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+
+Kita membutuhkan csrf_token  karena Django menggunakan mekanisme ini untuk mempertahankan pertahanan terhadap serangan Cross-Site Request Forgery (CSRF).
+
+Secara sederhana, csrf_token adalah token rahasia yang unik yang dibuat oleh server Django untuk setiap sesi pengguna. Ketika form dikirim token ini juga dikirim kembali. Server kemudian membandingkan token yang diterima dengan token yang dia simpan untuk sesi tersebut jika cocok request diperbolehkan, jika tidakk request ditolak.
+
+Jikda tidak menambahkan token tersebut, Middleware CsrfViewMiddleware akan Menolak Request Django memiliki middleware yang aktif secara default yang memeriksa semua request, Error "403 Forbidden": Ketika middleware tersebut tidak menemukan token CSRF yang valid dalam request POST yang masuk, Django akan secara sengaja menolak request tersebut dan mengembalikan respons HTTP 403 Forbidden
+
+Penyerang dapat melancarkan serangan CSRF misal secara analogi, Bayangkan CSRF seperti seorang penipu yang memalsukan tanda tangan Anda di sebuah formulir transfer bank. Bank yaitu servery hanya melihat formulir yang sudah ditandatangani dan mentransfer uang, tanpa tahu bahwa Anda sebenarnya tidak pernah mengisi formulir itu.
+
+cara kerja penyerang:
+Korban login ke sebuah situs web target (misalnya, situs bank di bank.com). Login ini membuat cookie sesi yang valid tersimpan di browser korban.
+
+Penyerang membujuk korban untuk mengunjungi website jahat milik penyerang. Bujukan ini bisa melalui link dalam email, iklan, atau komentar di forum.
+
+Di website jahat tersebut, terdapat elemen tersembunyi yang secara otomatis mengirim request POST ke endpoint penting di bank.com. Request ini bisa berupa perintah untuk transfer uang, mengubah email, atau mengubah password.
+
+source : https://portswigger.net/web-security/csrf
+
+5.  Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+Tujuan utama dari semua implementasi ini adalah untuk membangun aplikasi web yang lengkap, aman, dan dapat diakses oleh berbagai klien
+
+pertama kita menambahkan views untuk XML dan JSON, Format HTML hanya cocok untuk manusia. Mesin membutuhkan data terstruktur yang mudah diurai, yaitu XML dan JSON . Dengan menyediakan endpoint XML/JSON, kita membuat data aplikasi dapat dikonsumsi oleh berbagai klien, meningkatkan kegunaan dan integrasi jadi kayak backendnya di abstract, jadi user tidak perlu lihat yang compleks tapi final tampilan yaitu dari HTML. Terus ada juga buat index by id untuk JSON dan XML agar kita bisa akses producgt yang specific melalui id mereka.
+
+kedua, membuat routing teripisah untuk setiap view yang ada, Setiap fungsi yang berbeda dalam aplikasi harus memiliki alamat (URL) yang unik sehingga dapat diakses secara spesifik
+
+ketiga memnuat halaman daftar dengan tombol add dan detail itu untuk memberikan user experience dan juga sebagai
+fitur untuk tujuan web kita yaitu jual produk kaitan dengan sepak bola, di html ada line seperti a href... sebagai contoh: <a href="{% url 'create_item' %}">Add New Item</a> kita bisa lihat kalau misal user click tombol tersebut
+maka django akan cek url berdasarkan kode di html dan jika terdapat di url path maka ia akan execute fungsi di viewss dari url. Halaman detail product itu tentunya kita harus buat template file baru karena struktur dari halamannya beda dan juga programmer lain bisa mudah baca dan tentukan webpage apa yang dia sedang lihat melalui vs code.
+
+keempat, ini menyinggung soal halaman form dan juga beberapa yang sudah dibahas pada step ketiga.  Tugas "menampilkan form" dan "memproses data form" adalah dua tanggung jawab yang berbeda. Memisahkan logika ini membuat kode lebih bersih dan mudah dikelola. Halaman form khusus (create_product.html) hanya fokus pada satu tugas: mengumpulkan input user. View create_product menangani dua hal menampilkan form kosong (GET) dan memproses data yang dikirim (POST) yang nanti akan ditampil ke HTML create product. Pemisahan ini mencegah kekacauan logika.
+
+6. Tidak ada, aman saja.
+
+4 URL postman:
+![alt text](tugas1XML.png)
+![alt text](tugas1JSON.png)
+![alt text](tugasIndexJSON.png)
+![alt text](tugasIndexXML.png)
+
+
+
+

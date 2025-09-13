@@ -34,7 +34,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "edward-jeremy41-messyten.pbp.cs.ui.ac.id"]
 
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://edward-jeremy41-messyten.pbp.cs.ui.ac.id/",
+    "http://edward-jeremy41-messyten.pbp.cs.ui.ac.id/"
+]
 
 # Application definition
 
@@ -63,8 +66,8 @@ ROOT_URLCONF = 'messy_ten.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True, #diproritaskan kalau set ke true
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
