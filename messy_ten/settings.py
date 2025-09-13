@@ -19,6 +19,8 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+f = 0 #testing
+print("es")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -35,8 +37,8 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "edward-jeremy41-messyten.pbp.cs.ui.ac.id"]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://edward-jeremy41-messyten.pbp.cs.ui.ac.id/",
-    "http://edward-jeremy41-messyten.pbp.cs.ui.ac.id/"
+    "https://edward-jeremy41-messyten.pbp.cs.ui.ac.id",
+    "http://edward-jeremy41-messyten.pbp.cs.ui.ac.id"
 ]
 
 # Application definition
