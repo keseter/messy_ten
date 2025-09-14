@@ -138,10 +138,10 @@ keempat, ini menyinggung soal halaman form dan juga beberapa yang sudah dibahas 
 6. Tidak ada, aman saja.
 
 4 URL postman:
-![alt text](tugas1XML.png)
-![alt text](tugas1JSON.png)
-![alt text](tugasIndexJSON.png)
-![alt text](tugasIndexXML.png)
+![alt text](<Screenshot 2025-09-14 150642.png>)
+![alt text](<Screenshot 2025-09-14 150809.png>)
+![alt text](<Screenshot 2025-09-14 150832.png>)
+![alt text](<Screenshot 2025-09-14 150936.png>)
 
 
 

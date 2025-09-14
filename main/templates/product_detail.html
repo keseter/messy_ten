@@ -4,7 +4,7 @@
 
 <h1>{{ product.name }}</h1>
 <p><b>{{ product.get_category_display }}</b>{% if product.is_featured %} | 
-    <b>Featured</b>{% endif %}</p>
+    <b>Featured</b>{% endif %} | Price: Rp <i>{{ product.price }}</i></p>
 
 {% if product.thumbnail %}
 <img src="{{ product.thumbnail }}" alt="Product thumbnail" width="300">
