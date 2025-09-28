@@ -65,7 +65,7 @@ def logout_user(request):
 def create_product(request):
     form = ProductForm(request.POST or None)
 
-    if form.is_valid() and request.method == 'POST':
+    if form.is_valid() and request.method == 'POST': # if valid
         news_entry = form.save(commit = False)
         news_entry.user = request.user
         news_entry.save()
