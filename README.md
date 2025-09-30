@@ -309,4 +309,79 @@ def show_product(request, id):
 @login_required adalah filter akses  jika user valid (sudah login), view dijalanka yaitu show product kalau tidak, user di-redirect ke login page pada login html tempalte
 
 
+**Tugas 5**
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+
+1. !important (override semua, tapi masih ikut aturan spesifisitas kalau sama-sama pakai !important)
+2. Inline style (style="..." langsung di elemen HTML)
+3. ID selector (#id)
+4. Class selector, attribute selector, pseudo-class 
+5. Element selector dan pseudo-element (p, div, ::before, ::after)
+6. Urutan penulisan kalau bobot sama, aturan paling bawah yang dipakai
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+
+1. Perbedaan Ukuran Layar
+Pengguna mengakses web lewat berbagai perangkat: smartphone, tablet, laptop, desktop, bahkan TV. Jika tampilan tidak menyesuaikan, pengalaman pengguna jadi buruk.
+
+2. User Experience (UX)
+Layout yang fleksibel membuat pengguna nyaman membaca teks, menekan tombol, atau melihat gambar tanpa harus zoom in/out manual.
+
+3. SEO (Search Engine Optimization)
+Google memberi peringkat lebih tinggi pada website yang mobile-friendly. Jadi responsive design berpengaruh langsung pada visibilitas di mesin pencari.
+
+dan banyak lagi
+
+Sudah Menerapkan Responsive Design
+
+Contoh: YouTube
+
+Di smartphone: video player otomatis menyesuaikan lebar layar, menu navigasi jadi icon bottom bar, teks lebih ringkas.
+
+Di desktop: tampilan lebih lebar, sidebar muncul penuh, rekomendasi lebih banyak.
+Alasan: YouTube punya audiens global dengan mayoritas user mobile, jadi responsif sangat penting.
+
+
+Belum Menerapkan Responsive Design
+
+Contoh: Situs web sekolah/kampus lama (misalnya buatan awal 2010-an)
+
+Di smartphone: teks terlalu kecil, harus zoom manual.
+
+Tombol menu berantakan dan sering overlap.
+
+Layout fix-width , jadi di layar kecil harus scroll horizontal.
+Alasan: Dibuat dengan asumsi pengguna hanya akses dari desktop, belum ada perhatian ke mobile user.
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+
+Dalam CSS, margin, border, dan padding adalah bagian dari box model, magin adalah ruang luar elemen yang mengatur jarak antar elemen, border adalah garis tepi yang mengelilingi elemen dan bisa diberi warna atau gaya, sedagkan padding adalah ruang di dalam elemen antara konten dan border, misalnya dengan CSS margin: 20px border:2px solid black padding:10px sebuah kotak akan memiliki jarak 20px dari elemen lain, tepi hitam setebal 2px, dan ruang dalam 10px antara teks dengan garis tepi.
+
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+
+Dalam CSS, Flexbox dan Grid Layout adalah dua sistem tata letak modern yang memudahkan pengaturan posisi elemen di halaman web. Flexbox Flexible Box Layout bekerja satu dimensi baris atau kolom, cocok untuk menyusun elemen secara sejajar, rata tengah, memberi jarak otmatis, atau membuat layout yang fleksibel di berbagai ukuran layar, misalnya menu navigasi horizontal atau daftar kartu produk. Grid Layout, sebaliknya, bekerja dua dimensi (baris dan kolom) sekaligus, sehingga lebih tepat untuk membuat struktur halaman yang kompleks seperti dashboard, galeri foto, atau template majalah, karena kita bisa menentukan ukuran kolom and baris, gap antar grid, serta area tertentu untuk elemen. Singkatnya, Flexbox lebih efisien untuk penyusunan linear, sedangkan Grid lebih powerful untuk layout berbasis tabel dua dimensi.
+
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+
+Implement fungsi Edit dan Delete product, tentunya kita bisa lakukan through views terus menggunakan bawaan dari django dan mengeksekusi delete object productnya dari DB, 
+
+terus kita harus customize halaman galaman yang berbeda dengan tutorial jadi pertama kita pilih warna yang konsistent, saya pilih warna agak biru, kuning sebgai thema. terus kita setup Base layout
+
+Di base.html: set background (gradient halus), pakai navbar sekali (di-include di base).
+
+Form styling konsisten
+
+Bungkus form dengan .form-style.
+
+dan nanti akaan keapply ke semua page yang extend base, pada setiap html file juga dimodif warna.
+
+terus kita kustomisasi card product agar berbeda dari tutorial dengan menambahkan accent bar, mengubah rasio thumbnail menjadi 21:9 supaya lebih kompak, memberi hover overlay yang tidak menghalangi klik, serta price pill yang menonjol. Kita juga menampilkan badge kategori dan status dan chip inisial penjual, lalu Edit tentunya Delete hanya muncul untuk pemilik produk. Kartu dibuat responsif (1–2–3 kolom), punya fallback pola saat tidak ada gambar smemacam kayak animasi, dan tetap menjaga aksesibilitas (alt text, focus ring, kontras) agar nyaman dipakai di mobile maupun desktop.
+
+
+terus navbar kayak sama saja dengan instruksi tugas,
+di desktop, struktur menu horizontal brand di kiri, tautan fitur di tengah, dan bagian user (nama/Logout atau Login/Register) di kanan. Di mobile, saya tampilkan brand tombol hamburger yang men-toggle menu vertikal ikon open/close saya sinkronkan via aria-expanded, dan saya tambahkan penanganan Escape agar mudah ditutup. Warna dan aksen mengikuti tema global saya pastikan ukuran target sentuh cukup besar serta kontras teks memadai.
+
+
 

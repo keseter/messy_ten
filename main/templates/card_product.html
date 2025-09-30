@@ -1,76 +1,118 @@
 {% load static %}
-<article class="bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+<article
+  class="group relative rounded-2xl overflow-hidden border border-slate-200 bg-white/90 backdrop-blur shadow-sm transition
+         hover:shadow-xl hover:-translate-y-0.5 duration-300">
+
+  <!-- Barça accent strip -->
+  <div class="h-1 w-full bg-gradient-to-r from-[#004D98] via-[#FFCD00] to-[#A50044]"></div>
+
   <!-- Thumbnail -->
-  <div class="aspect-[16/9] relative overflow-hidden">
+  <div class="relative aspect-[16/9] overflow-hidden">
     {% if product.thumbnail %}
-      <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+      <img src="{{ product.thumbnail }}" alt="{{ product.name }}"
+           class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
     {% else %}
-      <div class="w-full h-full bg-gray-200"></div>
+      <!-- fallback tanpa gambar -->
+      <div class="w-full h-full bg-[radial-gradient(circle_at_25%_25%,#e5e7eb,transparent_40%),radial-gradient(circle_at_75%_75%,#f1f5f9,transparent_40%)]"></div>
     {% endif %}
 
-    <!-- Category Badge -->
+    <!-- Top-left: Category -->
     <div class="absolute top-3 left-3">
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-green-600 text-white">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-[#004D98] text-white shadow">
         {{ product.get_category_display }}
       </span>
     </div>
 
-    <!-- Status Badges -->
-    <div class="absolute top-3 right-3 flex space-x-2">
+    <!-- Top-right: Status -->
+    <div class="absolute top-3 right-3 flex gap-2">
       {% if product.is_featured %}
-        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-          Featured
-        </span>
+        <span class="inline-flex items-center px-2 py-1 rounded text-[11px] font-semibold bg-[#FFCD00] text-slate-900 shadow">Featured</span>
       {% endif %}
       {% if product.is_product_hot %}
-        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
-          Hot
-        </span>
+        <span class="inline-flex items-center px-2 py-1 rounded text-[11px] font-semibold bg-[#A50044] text-white shadow">Hot</span>
       {% endif %}
     </div>
+
+    <!-- Bottom-left: Price badge -->
+    <div class="absolute bottom-3 left-3">
+      <span class="inline-flex items-center gap-1.5 rounded-md bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-900 shadow">
+        <!-- small price icon -->
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 8h7a3 3 0 1 1 0 6H9m0 0V5m0 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Rp. {{ product.price }}
+      </span>
+    </div>
+
+    <!-- Hover overlay dn Quick View -->
+    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-0 transition
+                group-hover:opacity-100"></div>
+    <a href="{% url 'main:show_product' product.id %}"
+       class="absolute bottom-4 right-4 md:bottom-1/2 md:right-1/2 md:translate-x-1/2 md:translate-y-1/2
+              opacity-0 group-hover:opacity-100 transition
+              inline-flex items-center gap-2 rounded-md bg-[#FFCD00] text-slate-900 text-xs font-semibold px-3 py-2 shadow">
+      Quick View
+      <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path d="M12.293 5.293a1 1 0 011.414 0L18 9.586l-4.293 4.293a1 1 0 01-1.414-1.414L14.586 11H4a1 1 0 110-2h10.586l-2.293-2.293a1 1 0 010-1.414z"/>
+      </svg>
+      <span class="sr-only">View {{ product.name }}</span>
+    </a>
   </div>
 
   <!-- Content -->
-  <div class="p-5">
-    <div class="flex items-center text-sm text-gray-500 mb-3">
-      <time datetime="{{ product.created_at|date:'c' }}">
-        {{ product.created_at|date:"M j, Y" }}
-      </time>
-      <span class="mx-2">•</span>
-      <span> Rp. {{ product.price}} </span>
-    </div>  
+  <div class="p-4">
+    <!-- Meta row -->
+    <div class="flex items-center text-xs text-slate-500 mb-2">
+      <time datetime="{{ product.created_at|date:'c' }}">{{ product.created_at|date:"M j, Y" }}</time>
+      {% if product.user %}
+        <span class="mx-1.5">•</span>
+        <span class="inline-flex items-center gap-1">
+          <!-- tiny avatar from initial -->
+          <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#004D98]/10 text-[10px] font-bold text-[#004D98]">
+            {{ product.user.username|first|upper }}
+          </span>
+          {{ product.user.username }}
+        </span>
+      {% endif %}
+    </div>
 
-    <h3 class="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 leading-tight">
-      <a href="{% url 'main:show_product' product.id %}" class="hover:text-green-600 transition-colors">
+    <!-- Title -->
+    <h3 class="text-base font-semibold text-slate-900 mb-2 line-clamp-2">
+      <a href="{% url 'main:show_product' product.id %}" class="hover:text-[#004D98] transition-colors">
         {{ product.name }}
       </a>
     </h3>
 
-    <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
-      {{ product.description|truncatewords:20 }}
+    <!-- Description -->
+    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3">
+      {{ product.description|truncatewords:22 }}
     </p>
 
-    <!-- Action Buttons -->
-    {% if user.is_authenticated and product.user == user %}
-      <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-        <a href="{% url 'main:show_product' product.id %}" class="text-green-600 hover:text-green-700 font-medium text-sm transition-colors">
-          Read more
-        </a>
-        <div class="flex space-x-2">
-          <a href="{% url 'main:edit_product' product.id %}" class="text-gray-600 hover:text-gray-700 text-sm transition-colors">
-            Edit
-          </a>
-          <a href="{% url 'main:delete_product' product.id %}" class="text-red-600 hover:text-red-700 text-sm transition-colors">
-            Delete
-          </a>
+    <!-- Divider -->
+    <div class="mt-4 h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+
+    <!-- Actions -->
+    <div class="mt-3 flex items-center justify-between">
+      <a href="{% url 'main:show_product' product.id %}" class="text-[#004D98] hover:underline text-sm font-medium">
+        View details →
+      </a>
+
+      {% if user.is_authenticated and product.user == user %}
+        <div class="flex items-center gap-3 text-sm">
+          <a href="{% url 'main:edit_product' product.id %}" class="text-slate-600 hover:text-slate-800">Edit</a>
+          <a href="{% url 'main:delete_product' product.id %}" class="text-[#A50044] hover:underline">Delete</a>
         </div>
-      </div>
-    {% else %}
-      <div class="pt-4 border-t border-gray-100">
-        <a href="{% url 'main:show_product' product.id %}" class="text-green-600 hover:text-green-700 font-medium text-sm transition-colors">
-          Read more →
-        </a>
-      </div>
-    {% endif %}
+      {% else %}
+        <!-- Decorative wishlist button (non-functional placeholder) -->
+        <button type="button" aria-label="Save"
+                class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-slate-200 text-slate-500
+                       hover:border-[#004D98]/30 hover:text-[#004D98] transition">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {% endif %}
+    </div>
   </div>
 </article>
