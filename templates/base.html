@@ -9,6 +9,9 @@
   </head>
   <body class="h-full min-h-screen m-0 bg-gradient-to-b from-[#eef3ff] via-[#f7f9ff] to-[#e6efff] text-slate-900">
     {% include 'navbar.html' %}
-    {% block content %}{% endblock content %}
+    {% block content %}
+
+    {% endblock content %}
+    {% include 'toast.html' %}
   </body>
 </html>
