@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block meta %}
-<title>Create Product - Football Product</title>
+<title>Create Product - MessyTen</title> {# CHANGED: judul #}
 {% endblock meta %}
 
 {% block content %}
@@ -24,10 +24,9 @@
       </div>
 
       <!-- Form -->
-      <form method="POST" class="p-6 sm:p-8 space-y-6">
+      <form id="createForm" method="POST" class="p-6 sm:p-8 space-y-6"> {# CHANGED: id untuk AJAX #}
         {% csrf_token %}
 
-        <!-- Auto-render fields nicely -->
         {% for field in form %}
           <div>
             <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-2">
@@ -45,7 +44,6 @@
           </div>
         {% endfor %}
 
-        <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
           <a href="{% url 'main:show_main' %}"
              class="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-slate-700 rounded-md font-medium hover:bg-gray-50 transition text-center">
@@ -60,4 +58,40 @@
     </div>
   </div>
 </div>
+
+<script>
+  // AJAX submit untuk create
+  function getCookie(name) {
+    const value = `; ${document.cookie}`; const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  }
+  const CSRF = () => getCookie('csrftoken');
+
+  document.getElementById('createForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); //  intercept submit
+    const formEl = e.target;
+    const fd = new FormData(formEl);
+
+    try {
+      const res = await fetch("{% url 'main:add_product_ajax' %}", {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF() },
+        body: fd
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        showToast((data && (data.error || 'Failed to create product')) || 'Failed to create product', 'error');
+        return;
+      }
+
+      showToast('Product created', 'success');
+    
+      window.location = "{% url 'main:show_main' %}";
+    } catch (err) {
+      console.error(err);
+      showToast('Network error', 'error');
+    }
+  });
+</script>
 {% endblock %}

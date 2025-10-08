@@ -6,7 +6,7 @@
     <!-- Top row -->
     <div class="flex items-center justify-between h-16">
       <!-- Brand -->
-      <a href="/" class="flex items-center gap-2">
+      <a href="{% url 'main:show_main' %}" class="flex items-center gap-2">
         <div class="h-7 w-7 rounded-full bg-gradient-to-br from-[#004D98] to-[#A50044] ring-2 ring-[#004D98]/15"></div>
         <span class="text-lg sm:text-xl font-semibold">
           <span class="text-[#004D98]">{{ brand|default:"MessyTen" }}</span>
@@ -16,7 +16,7 @@
 
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-8">
-        <a href="#" class="text-slate-600 hover:text-slate-900 font-medium">Home</a>
+        <a href="{% url 'main:show_main' %}" class="text-slate-600 hover:text-slate-900 font-medium">Home</a>
         <a href="#" class="text-slate-600 hover:text-slate-900 font-medium">Shoes</a>
         <a href="#" class="text-slate-600 hover:text-slate-900 font-medium">Apparel</a>
         <a href="#" class="text-slate-600 hover:text-slate-900 font-medium">Hardware</a>
@@ -35,6 +35,7 @@
             </div>
           </div>
           <a href="{% url 'main:logout' %}"
+             id="btn-logout" data-ajax="1"
              class="px-4 py-2 rounded-md bg-[#A50044] text-white font-semibold hover:brightness-110 transition">
             Logout
           </a>
@@ -65,7 +66,7 @@
   <div id="nav-menu" class="md:hidden hidden border-t border-slate-200 bg-white/95 backdrop-blur">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <nav class="flex flex-col gap-4 text-slate-700 font-medium">
-        <a href="#" class="py-2">Home</a>
+        <a href="{% url 'main:show_main' %}" class="py-2">Home</a>
         <a href="#" class="py-2">Shoes</a>
         <a href="#" class="py-2">Apparel</a>
         <a href="#" class="py-2">Hardware</a>
@@ -79,7 +80,11 @@
           <div class="text-slate-900 font-semibold">{{ name|default:user.username }}</div>
           <div class="text-sm text-slate-500">{{ npm|default:"240123456" }} • {{ class|default:"PBP A" }}</div>
         </div>
-        <a href="{% url 'main:logout' %}" class="text-red-600 font-semibold">Logout</a>
+        <a href="{% url 'main:logout' %}"
+           id="btn-logout-mobile" data-ajax="1"
+           class="text-red-600 font-semibold">
+          Logout
+        </a>
       {% else %}
         <div class="flex items-center gap-3">
           <a href="{% url 'main:login' %}" class="text-[#004D98] hover:underline font-medium">Login</a>
@@ -110,7 +115,7 @@
       iconClose.classList.toggle('hidden');
     });
 
-    // Tutup menu saat tekan Escape (aksesibilitas)
+    // Tutup menu saat tekan Escape 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
         btn.click();

@@ -1,0 +1,304 @@
+
+<!-- Backdrop -->
+<div id="productModalBackdrop"
+     class="hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"></div>
+
+<!-- CRUD Modal -->
+<div id="productModal"
+     class="hidden fixed inset-0 z-[70] grid place-items-center p-4">
+  <div class="w-full max-w-lg rounded-2xl bg-white/95 backdrop-blur border border-slate-200 shadow-xl overflow-hidden">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-slate-200">
+      <h3 id="productModalTitle" class="text-xl font-semibold text-slate-900">
+        Create Product
+      </h3>
+      <p id="productModalSubtitle" class="text-sm text-slate-500 mt-1">
+        Publish your football product
+      </p>
+    </div>
+
+    <!-- Body (Form) -->
+    <form id="productForm" class="px-6 py-5 space-y-4">
+      {% csrf_token %}
+      <input type="hidden" id="productMode" value="create"><!-- create dan update -->
+      <input type="hidden" id="productId">
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="p_name">Name</label>
+        <input id="p_name" name="name" type="text" required
+               class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-[#004D98] focus:border-[#004D98]" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="p_price">Price</label>
+        <input id="p_price" name="price" type="number" min="0" required
+               class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-[#004D98] focus:border-[#004D98]" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="p_thumbnail">Thumbnail URL</label>
+        <input id="p_thumbnail" name="thumbnail" type="url"
+               class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-[#004D98] focus:border-[#004D98]" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="p_category">Category</label>
+        <select id="p_category" name="category" required
+                class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-[#004D98] focus:border-[#004D98]">
+          <option value="">Choose category</option>
+          <option value="jerseys">Jerseys</option>
+          <option value="shorts">Shorts</option>
+          <option value="training_wear">Training Wear</option>
+          <option value="footwear">Footwear</option>
+          <option value="accessories">Accessories</option>
+          <option value="equipment">Equipment</option>
+          <option value="collectibles">Collectibles</option>
+          <option value="fan_gear">Fan Gear</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1" for="p_description">Description</label>
+        <textarea id="p_description" name="description" rows="3" required
+                  class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-[#004D98] focus:border-[#004D98]"></textarea>
+      </div>
+
+      <label class="inline-flex items-center gap-2 select-none">
+        <input id="p_is_featured" name="is_featured" type="checkbox"
+               class="h-4 w-4 rounded border-slate-300 text-[#004D98] focus:ring-[#004D98]" />
+        <span class="text-sm text-slate-700">Featured</span>
+      </label>
+    </form>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3">
+      <button type="button" id="productCancel"
+              class="px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50">
+        Cancel
+      </button>
+      <button type="button" id="productSubmit"
+              class="px-4 py-2 rounded-md bg-[#004D98] text-white font-semibold hover:brightness-110">
+        Save Product
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="confirmModal"
+     class="hidden fixed inset-0 z-[80] grid place-items-center p-4">
+  <div class="w-full max-w-md rounded-2xl bg-white/95 backdrop-blur border border-slate-200 shadow-xl overflow-hidden">
+    <div class="px-6 py-5">
+      <h3 class="text-lg font-semibold text-slate-900">Delete product?</h3>
+      <p class="text-sm text-slate-600 mt-1">
+        This action cannot be undone.
+      </p>
+    </div>
+    <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3">
+      <button type="button" id="confirmCancel"
+              class="px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50">
+        Cancel
+      </button>
+      <button type="button" id="confirmYes"
+              class="px-4 py-2 rounded-md bg-[#A50044] text-white font-semibold hover:brightness-110">
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+ 
+  function getCookie(name) {
+    const value = `; ${document.cookie}`; const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  }
+  const CSRF = () => getCookie('csrftoken');
+
+  const categoryMap = {
+    jerseys: 'Jerseys',
+    shorts: 'Shorts',
+    training_wear: 'Training Wear',
+    footwear: 'Footwear',
+    accessories: 'Accessories',
+    equipment: 'Equipment',
+    collectibles: 'Collectibles',
+    fan_gear: 'Fan Gear',
+  };
+
+  
+  const backdrop   = document.getElementById('productModalBackdrop');
+  const modal      = document.getElementById('productModal');
+  const form       = document.getElementById('productForm');
+  const modeInput  = document.getElementById('productMode');
+  const idInput    = document.getElementById('productId');
+
+  const nameEl        = document.getElementById('p_name');
+  const priceEl       = document.getElementById('p_price');
+  const thumbEl       = document.getElementById('p_thumbnail');
+  const catEl         = document.getElementById('p_category');
+  const descEl        = document.getElementById('p_description');
+  const featuredEl    = document.getElementById('p_is_featured');
+
+  const titleEl    = document.getElementById('productModalTitle');
+  const subEl      = document.getElementById('productModalSubtitle');
+  const cancelBtn  = document.getElementById('productCancel');
+  const submitBtn  = document.getElementById('productSubmit');
+
+  const cModal     = document.getElementById('confirmModal');
+  const cCancel    = document.getElementById('confirmCancel');
+  const cYes       = document.getElementById('confirmYes');
+
+  let deleteTargetId = null;
+
+  /* ========= open close ========= */
+  function openBackdrop() {
+    backdrop.classList.remove('hidden');
+  }
+  function closeBackdrop() {
+    backdrop.classList.add('hidden');
+  }
+
+  function openModal() {
+    openBackdrop();
+    modal.classList.remove('hidden');
+  }
+  function closeModal() {
+    modal.classList.add('hidden');
+    closeBackdrop();
+  }
+
+  function openConfirm() {
+    openBackdrop();
+    cModal.classList.remove('hidden');
+  }
+  function closeConfirm() {
+    cModal.classList.add('hidden');
+    closeBackdrop();
+  }
+
+  // API urls via django templ
+  const ADD_URL = "{% url 'main:add_product_ajax' %}";
+
+  // public API dipakai main html
+  window.showCreateModal = function() {
+    modeInput.value = 'create';
+    idInput.value = '';
+    titleEl.textContent = 'Create Product';
+    subEl.textContent = 'Publish your football product';
+    submitBtn.textContent = 'Create';
+
+    // Reeset fields
+    form.reset();
+    featuredEl.checked = false;
+    openModal();
+  };
+
+  // productObj
+  window.showEditModal = function(productObj) {
+    modeInput.value = 'update';
+    idInput.value = productObj.id;
+    titleEl.textContent = 'Update Product';
+    subEl.textContent = 'Edit your football product';
+    submitBtn.textContent = 'Update';
+
+    nameEl.value  = productObj.name || '';
+    priceEl.value = productObj.price ?? '';
+    thumbEl.value = productObj.thumbnail || '';
+    catEl.value   = productObj.category || '';
+    descEl.value  = productObj.description || '';
+    featuredEl.checked = !!productObj.is_featured;
+
+    openModal();
+  };
+
+  window.showConfirmDelete = function(productId) {
+    deleteTargetId = productId;
+    openConfirm();
+  };
+
+  // untuk kompabilitas tombol lama
+  window.showModal = window.showCreateModal;
+
+  
+  async function submitProduct() {
+    const fd = new FormData(form);
+
+    // checkbox 
+    if (!featuredEl.checked) fd.delete('is_featured');
+
+    const mode = modeInput.value;
+    let url   = ADD_URL;
+    if (mode === 'update') {
+      const id = idInput.value;
+      url = "{% url 'main:update_product_ajax' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', id);
+    }
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF() },
+        body: fd
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        // tampilkan error form ringkas
+        let msg = 'Failed to save product';
+        if (data.error) {
+          const firstKey = Object.keys(data.error)[0];
+          if (firstKey) msg = `${firstKey}: ${data.error[firstKey][0]}`;
+        }
+        showToast(msg, 'error');
+        return;
+      }
+
+      const p = data.product;
+      // sematkan readable category
+      p.category_display = categoryMap[p.category] || p.category;
+
+      if (mode === 'create') {
+        document.dispatchEvent(new CustomEvent('product:added', { detail: p }));
+        showToast('Product created', 'success');
+      } else {
+        document.dispatchEvent(new CustomEvent('product:updated', { detail: p }));
+        showToast('Product updated', 'success');
+      }
+      closeModal();
+    } catch (e) {
+      console.error(e);
+      showToast('Network error', 'error');
+    }
+  }
+
+  submitBtn.addEventListener('click', submitProduct);
+  cancelBtn.addEventListener('click', closeModal);
+
+  /* delete  */
+  cCancel.addEventListener('click', closeConfirm);
+  cYes.addEventListener('click', async () => {
+    if (!deleteTargetId) return;
+    const url = "{% url 'main:delete_product_ajax' '00000000-0000-0000-0000-000000000000' %}"
+                  .replace('00000000-0000-0000-0000-000000000000', deleteTargetId);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF() },
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        showToast('Delete failed', 'error');
+        return;
+      }
+      // beritahu main untuk hapus card
+      document.dispatchEvent(new CustomEvent('product:deleted', { detail: { id: deleteTargetId }}));
+      showToast('Product deleted', 'success');
+      closeConfirm();
+    } catch (e) {
+      console.error(e);
+      showToast('Network error', 'error');
+    } finally {
+      deleteTargetId = null;
+    }
+  });
+</script>
