@@ -39,3 +39,5 @@ class Product(models.Model):
     @property
     def is_product_hot(self):
         return self.stock > 20
+
+#test
