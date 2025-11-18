@@ -55,7 +55,7 @@
     const fd = new FormData(form);
   
     try {
-      const res = await fetch("{% url 'main:login_ajax' %}", {
+      const res = await fetch("{% url 'authentication:login' %}", {
         method: 'POST',
         headers: { 'X-CSRFToken': CSRF() },
         body: fd
